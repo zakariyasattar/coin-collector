@@ -7,12 +7,14 @@ public class ZakSattarBot implements Bot {
 
     public String move(int row, int col, int coins, int arenaLen, int[][] botInfo, int[][] coinLocs) {
 
+      boolean enemyNorth = enemyThere(row, col, "north", botInfo, arenaLen);
+      boolean enemySouth = enemyThere(row, col, "south", botInfo, arenaLen);
+      boolean enemyWest = enemyThere(row, col, "west", botInfo, arenaLen);
+      boolean enemyEast = enemyThere(row, col, "north", botInfo, arenaLen);
+
       int smallI = 0;
       int smallest = 10000000;
       int[][] diffs = new int[coinLocs.length][3];
-
-      int goldXPos = coinLocs[0][1];
-      int goldYPos = coinLocs[0][0];
 
       for(int i = 0; i < coinLocs.length; i++){
         int currCoin = coinLocs[i][0] + coinLocs[i][1];
@@ -29,23 +31,41 @@ public class ZakSattarBot implements Bot {
         }
       }
 
-      // System.out.println(diffs[smallI][1] + " " + diffs[smallI][2] + "--------" + row + " " + col);
-
       if(row != diffs[smallI][1]){
         if(row > diffs[smallI][1]){
-          return "north";
+          if(!enemyNorth){
+            return "north";
+          }
+          else{
+            return "none";
+          }
         }
         else if(row < diffs[smallI][1]){
-          return "south";
+          if(!enemySouth){
+            return "south";
+          }
+          else {
+            return "none";
+          }
         }
       }
 
       if(col != diffs[smallI][2]){
         if(col > diffs[smallI][2]){
-          return "west";
+          if(!enemyWest){
+            return "west";
+          }
+          else {
+            return "none";
+          }
         }
         else if(col < diffs[smallI][2]){
-          return "east";
+          if(!enemyEast){
+            return "east";
+          }
+          else {
+            return "none";
+          }
         }
       }
 
@@ -67,4 +87,67 @@ public class ZakSattarBot implements Bot {
     public void newSimulation() {
       System.out.println("New Simulation!");
     }
+
+    public boolean enemyThere(int row, int col, String direction, int[][] botInfo, int arenaLen){
+
+      int counter = 0;
+
+      if(direction == "north"){
+        for(int i = 0; i < botInfo.length; i++){
+          for(int j = 0; j < botInfo[i].length; j++){
+            if(botInfo[i][j] < row - 1 && row != 0 && row != arenaLen){
+              counter++;
+            }
+          }
+        }
+
+        if(counter == botInfo.length){
+          return true;
+        }
+      }
+
+      else if(direction == "south"){
+        for(int i = 0; i < botInfo.length; i++){
+          for(int j = 0; j < botInfo[i].length; j++){
+            if(botInfo[i][j] > row + 1 && row != 0 && row != arenaLen){
+              counter++;
+            }
+          }
+        }
+
+        if(counter == botInfo.length){
+          return true;
+        }
+      }
+
+      else if(direction == "west"){
+        for(int i = 0; i < botInfo.length; i++){
+          for(int j = 0; j < botInfo[i].length; j++){
+            if(botInfo[i][j] < col - 1 && col != 0 && col != arenaLen){
+              counter++;
+            }
+          }
+        }
+
+        if(counter == botInfo.length){
+          return true;
+        }
+      }
+
+      else if(direction == "east"){
+        for(int i = 0; i < botInfo.length; i++){
+          for(int j = 0; j < botInfo[i].length; j++){
+            if(botInfo[i][j] > col + 1 && col != 0 && col != arenaLen){
+              counter++;
+            }
+          }
+        }
+
+        if(counter == botInfo.length){
+          return true;
+        }
+      }
+      return false;
+    }
+
 }
