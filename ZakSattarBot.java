@@ -7,21 +7,51 @@ public class ZakSattarBot implements Bot {
 
     public String move(int row, int col, int coins, int arenaLen, int[][] botInfo, int[][] coinLocs) {
 
-      if(row == coinLocs[0][0] && col == coinLocs[0][1]){
-        return "none";
+      int smallI = 0;
+      int smallest = 10000000;
+      int[][] diffs = new int[coinLocs.length][3];
+
+      int goldXPos = coinLocs[0][1];
+      int goldYPos = coinLocs[0][0];
+
+      for(int i = 0; i < coinLocs.length; i++){
+        int currCoin = coinLocs[i][0] + coinLocs[i][1];
+        int currPos = row + col;
+
+        diffs[i][0] = Math.abs(currCoin - currPos);
+        diffs[i][1] = coinLocs[i][0];
+        diffs[i][2] = coinLocs[i][1];
       }
 
-      else {
-        int goldXPos = coinLocs[0][0];
-        int goldYPos = coinLocs[0][1];
-
-        System.out.println("xPoss" + goldXPos+ "  " + row);
-        System.out.println("yPoss" + goldYPos+ "  " + col);
-
-        
+      for(int i = 0; i < diffs.length; i++){
+        if(diffs[i][0] < smallest){
+          smallI = i;
+        }
       }
+
+      // System.out.println(diffs[smallI][1] + " " + diffs[smallI][2] + "--------" + row + " " + col);
+
+      if(row != diffs[smallI][1]){
+        if(row > diffs[smallI][1]){
+          return "north";
+        }
+        else if(row < diffs[smallI][1]){
+          return "south";
+        }
+      }
+
+      if(col != diffs[smallI][2]){
+        if(col > diffs[smallI][2]){
+          return "west";
+        }
+        else if(col < diffs[smallI][2]){
+          return "east";
+        }
+      }
+
       return "none";
     }
+
 
 
     public void died(int moves, int coins, String reason) {
