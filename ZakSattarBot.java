@@ -1,11 +1,32 @@
 public class ZakSattarBot implements Bot {
 
+  private int counter = 0;
+
     //returns the name of the Bot
     public String getName() {
         return getClass().getName();
     }
 
     public String move(int row, int col, int coins, int arenaLen, int[][] botInfo, int[][] coinLocs) {
+
+      int largestCoin = -10000000;
+      int[] playerCoins = new int[botInfo.length];
+      for(int i = 0; i < botInfo.length; i++){
+        playerCoins[i] = botInfo[i][2];
+      }
+
+      for(int g : playerCoins){
+        if(g > largestCoin){
+          largestCoin = g;
+        }
+      }
+
+      if(largestCoin > coins){
+        System.out.println(largestCoin + " --he;lllllll ");
+      }
+      else {
+        System.out.println("Beast");
+      }
 
       boolean enemyNorth = enemyThere(row, col, "north", botInfo, arenaLen);
       boolean enemySouth = enemyThere(row, col, "south", botInfo, arenaLen);
@@ -33,43 +54,22 @@ public class ZakSattarBot implements Bot {
 
       if(row != diffs[smallI][1]){
         if(row > diffs[smallI][1]){
-          if(!enemyNorth){
-            return "north";
-          }
-          else{
-            return "none";
-          }
+          return "north";
         }
         else if(row < diffs[smallI][1]){
-          if(!enemySouth){
-            return "south";
-          }
-          else {
-            return "none";
-          }
+          return "south";
         }
       }
 
       if(col != diffs[smallI][2]){
         if(col > diffs[smallI][2]){
-          if(!enemyWest){
-            return "west";
-          }
-          else {
-            return "none";
-          }
+          return "west";
         }
         else if(col < diffs[smallI][2]){
-          if(!enemyEast){
-            return "east";
-          }
-          else {
-            return "none";
-          }
+          return "east";
         }
       }
-
-      return "none";
+    return "none";
     }
 
 
@@ -80,7 +80,7 @@ public class ZakSattarBot implements Bot {
     }
 
     public void won(int moves, int coins) {
-      System.out.println("You won" + moves + " " + coins);
+      System.out.println("You won " + moves + " " + coins);
     }
 
 
