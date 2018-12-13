@@ -1,4 +1,4 @@
-public class TestBot implements Bot {
+public class EphraimBennettBot implements Bot {
 
     //returns the name of the Bot
     public String getName() {
@@ -24,7 +24,23 @@ public class TestBot implements Bot {
     //                The last three rows are for three more Silver coins
     //@return        One of "north", "east", "south", "west", "none"
     public String move(int row, int col, int coins, int arenaLen, int[][] botInfo, int[][] coinLocs) {
-        int choice = (int)(Math.random()*5);
+        int choice = -1;
+
+        int[] closestCoin = findClosestCoin(coinLocs, row, col);
+//        System.out.println(closestCoin);
+
+        int[] closestBot = findClosestBot(botInfo, row, col);
+
+        boolean shouldGrab = shouldGrabCoin(closestCoin, closestBot, row, col);
+
+        if (shouldGrab) {
+        	//do that
+        }
+
+        //choice = getDirection(closestCoin, row, col);
+        choice = ((int) Math.random() * 5);
+        //System.out.println(choice);
+
         switch(choice) {
             case 0: return "north";
             case 1: return "east";
@@ -34,7 +50,67 @@ public class TestBot implements Bot {
         }
     }
 
-    //informs the player they died in one simulation of the game
+    private int getDirection(int[] closestCoin, int row, int col) {
+
+    	int sideDirection = 1;
+    	int topDirection = 1;
+
+    	if (row - closestCoin[0] > 0) {
+    		sideDirection = 2;
+    	} else if (row - closestCoin[0] < 0) {
+    		sideDirection = 0;
+    	}
+
+    	if (col - closestCoin[1] > 0) {
+    		topDirection = 3;
+    	} else if (col - closestCoin[1] < 0) {
+    		topDirection = 1;
+    	}
+
+    	if (topDirection == -1)
+    		return sideDirection;
+    	else if (sideDirection == -1)
+    		return topDirection;
+    	return sideDirection;
+    }
+
+    private int[] findClosestCoin(int[][] coinLocs, int row, int col) {
+
+    	int[] closestCoin = {1000, 1000};
+
+    	for (int[] r : coinLocs) {
+    		int x = r[0];
+    		int y = r[1];
+
+    		int xDistance = Math.abs(row - x);
+    		int yDistance = Math.abs(col - y);
+    		int totalDistance = xDistance + yDistance;
+
+    		int closestCoinXDistance = Math.abs(row - closestCoin[0]);
+    		int closestCoinYDistance = Math.abs(col - closestCoin[1]);
+    		int closestCoinTotalDistance = closestCoinXDistance + closestCoinYDistance;
+
+    		if (totalDistance < closestCoinTotalDistance) {
+    			closestCoin = r;
+    		}
+    	}
+
+		return closestCoin;
+	}
+
+    private int[] findClosestBot(int[][] botInfo, int row, int col) {
+
+		return null;
+	}
+
+	private boolean shouldGrabCoin(int[] closestCoin, int[] closestBot, int row, int col) {
+
+		return false;
+	}
+
+
+
+	//informs the player they died in one simulation of the game
     //@param moves      the moves it took to die
     //@param coins      the number of coins the Bot had when it died
     //@param reason     why you died
@@ -55,9 +131,3 @@ public class TestBot implements Bot {
     }
 
 }
-
-class TestBotA extends TestBot {}
-class TestBotB extends TestBot {}
-class TestBotC extends TestBot {}
-class TestBotD extends TestBot {}
-class TestBotE extends TestBot {}

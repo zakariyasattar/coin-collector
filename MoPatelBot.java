@@ -1,9 +1,20 @@
-public class TestBot implements Bot {
 
+public class MoPatelBot implements Bot {
+	private int xCoin;
+	private int yCoin;
+	private int tempxCoin;
+	private int tempyCoin;
+	private int xEnemy;
+	private int yEnemy;
+	private int tempxEnemy;
+	private int tempyEnemy;
+	private int enemyCoins;
+	private int tempenemyCoins;
     //returns the name of the Bot
     public String getName() {
         return getClass().getName();
     }
+
 
     //returns the next direction the Bot should move
     //@param row        the row that the bot is in
@@ -24,14 +35,69 @@ public class TestBot implements Bot {
     //                The last three rows are for three more Silver coins
     //@return        One of "north", "east", "south", "west", "none"
     public String move(int row, int col, int coins, int arenaLen, int[][] botInfo, int[][] coinLocs) {
-        int choice = (int)(Math.random()*5);
-        switch(choice) {
-            case 0: return "north";
-            case 1: return "east";
-            case 2: return "south";
-            case 3: return "west";
-            default: return "none";
-        }
+
+    	if(coins > 10) {
+    		int j = 0;
+    		for (int [] botLocs : botInfo){
+    			if(j==0) {
+    				xEnemy = botLocs[0];
+    				yEnemy = botLocs[1];
+    				j++;
+    			}
+    			tempxEnemy = botLocs[0];
+    			tempyEnemy = botLocs[1];
+    			tempenemyCoins = botLocs[2];
+    			if(tempenemyCoins>enemyCoins && tempenemyCoins<coins) {
+    				enemyCoins = tempenemyCoins;
+    				xEnemy = botLocs[0];
+    				yEnemy = botLocs[1];
+
+    			}
+    		}
+
+    	}
+    	int i = 0;
+    	for(int[] coinPlace : coinLocs) {
+    		if(i == 0) {
+    		xCoin = coinPlace[0];
+    		yCoin = coinPlace[1];
+    		i++;
+    		}
+    		tempxCoin = coinPlace[0];
+    		tempyCoin = coinPlace[1];
+    		if(tempxCoin<xCoin && tempyCoin<yCoin) {
+    			xCoin = tempxCoin;
+    			yCoin = tempyCoin;
+    		}
+
+
+    	}
+
+    	if(row<xCoin) {
+    		return "south";
+    	}
+
+
+
+
+    	if(row>xCoin) {
+    		return "north";
+    	}
+
+    	if (col<yCoin) {
+    		return "east";
+    	}
+
+    	if(col>yCoin) {
+    		return "west";
+
+    	}
+            return "none";
+            //return "east";
+            //return "south";
+            //return "west";
+            //return "none";
+
     }
 
     //informs the player they died in one simulation of the game
@@ -54,10 +120,5 @@ public class TestBot implements Bot {
 
     }
 
-}
 
-class TestBotA extends TestBot {}
-class TestBotB extends TestBot {}
-class TestBotC extends TestBot {}
-class TestBotD extends TestBot {}
-class TestBotE extends TestBot {}
+}
