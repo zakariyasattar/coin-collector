@@ -1,4 +1,3 @@
-
 public class MoPatelBot implements Bot {
 	private int xCoin;
 	private int yCoin;
@@ -10,6 +9,10 @@ public class MoPatelBot implements Bot {
 	private int tempyEnemy;
 	private int enemyCoins;
 	private int tempenemyCoins;
+	private int bigbotX;
+	private int bigbotY;
+	private int hypeCoin;
+	private int temphypeCoin;
     //returns the name of the Bot
     public String getName() {
         return getClass().getName();
@@ -36,29 +39,86 @@ public class MoPatelBot implements Bot {
     //@return        One of "north", "east", "south", "west", "none"
     public String move(int row, int col, int coins, int arenaLen, int[][] botInfo, int[][] coinLocs) {
 
-    	if(coins > 10) {
-    		int j = 0;
-    		for (int [] botLocs : botInfo){
-    			if(j==0) {
-    				xEnemy = botLocs[0];
-    				yEnemy = botLocs[1];
-    				j++;
+    	/*for(int[] botLocs1 : botInfo) {
+    		if(botLocs1[2]>coins) {
+    			bigbotX = botLocs1[0];
+    			bigbotY = botLocs1[1];
+    			if(row<bigbotX && ((bigbotX-row)==2)) {
+    				return "north";
     			}
-    			tempxEnemy = botLocs[0];
-    			tempyEnemy = botLocs[1];
-    			tempenemyCoins = botLocs[2];
-    			if(tempenemyCoins>enemyCoins && tempenemyCoins<coins) {
-    				enemyCoins = tempenemyCoins;
-    				xEnemy = botLocs[0];
-    				yEnemy = botLocs[1];
+    			if(row>bigbotX && ((bigbotX-row)==-2)) {
+    				return "south";
+    			}
+    			if(col<bigbotX && ((bigbotX-row)==2)) {
+    				return "west";
+    			}
+    			if(col>bigbotX && ((bigbotX-row)==-2)) {
+    				return "east";
+    			}
+    		}
+    	}*/
 
-    			}
+    	//CODE TO ATTACK WEAKER BOT IN 1V1
+
+
+    	if(botInfo.length<=2) {
+    		xEnemy = botInfo[1][0];
+    		yEnemy = botInfo[1][1];
+    		enemyCoins = botInfo[1][2];
+    		if(enemyCoins<coins && botInfo.length<=2){
+    		if(row<xEnemy && row!=arenaLen) {
+    			return "south";
+    		}
+    		if(row>xEnemy && row!=0) {
+    			return "north";
+    		}
+    		if(col<yEnemy && col!=arenaLen) {
+    			return "east";
+    		}
+    		if(col>yEnemy && col!=0) {
+    			return "west";
+    		}
     		}
 
     	}
+
+    	//current code for closes coin
     	int i = 0;
+    	if(botInfo.length>2 || (botInfo.length<=2 && coins<=enemyCoins)) {
+    		for(int[] coinPlace : coinLocs) {
+    			if(i==0) {
+    				xCoin = Math.abs(coinPlace[0]-row);
+    				yCoin = Math.abs(coinPlace[1]-col);
+    				hypeCoin = (xCoin*2)+(yCoin*2);
+    				i++;
+    			}
+    			tempxCoin = Math.abs(coinPlace[0]-row);
+				tempyCoin = Math.abs(coinPlace[1]-col);
+				temphypeCoin = (tempxCoin*2)+(tempyCoin*2);
+				if(temphypeCoin<=hypeCoin) {
+	    			xCoin = coinPlace[0];
+	    			yCoin = coinPlace[1];
+	    		}
+    		}
+
+    		if(row<xCoin && row!=arenaLen) {
+    			return "south";
+    		}
+    		if(row>xCoin && row!=0) {
+    			return "north";
+    		}
+    		if(col<yCoin && col!=arenaLen) {
+    			return "east";
+    		}
+    		if(col>yCoin && col!=0) {
+    			return "west";
+    		}
+
+    	}
+    /*	if(botInfo.length>1) {
+    	int i1 = 0;
     	for(int[] coinPlace : coinLocs) {
-    		if(i == 0) {
+    		if(i1 == 0) {
     		xCoin = coinPlace[0];
     		yCoin = coinPlace[1];
     		i++;
@@ -69,29 +129,26 @@ public class MoPatelBot implements Bot {
     			xCoin = tempxCoin;
     			yCoin = tempyCoin;
     		}
-
-
     	}
 
-    	if(row<xCoin) {
+    	if(row<xCoin && row!=arenaLen) {
     		return "south";
     	}
 
-
-
-
-    	if(row>xCoin) {
+    	if(row>xCoin && row!=0) {
     		return "north";
     	}
 
-    	if (col<yCoin) {
+    	if (col<yCoin && col!=arenaLen) {
     		return "east";
     	}
 
-    	if(col>yCoin) {
+    	if(col>yCoin && col!=0) {
     		return "west";
 
     	}
+    	}*/
+
             return "none";
             //return "east";
             //return "south";

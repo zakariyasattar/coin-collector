@@ -65,31 +65,6 @@ public class ZakSattarBot implements Bot {
       }
 
       if(largestCoin > coins){
-        boolean canMoveNorth = enemyThere(row, col, "north", botInfo, arenaLen, coins);
-        boolean canMoveSouth = enemyThere(row, col, "south", botInfo, arenaLen, coins);
-        boolean canMoveWest = enemyThere(row, col, "west", botInfo, arenaLen, coins);
-        boolean canMoveEast = enemyThere(row, col, "east", botInfo, arenaLen, coins);
-
-        if(row != coinLocs[0][0]){
-          if(row > coinLocs[0][0] && canMoveNorth ){
-            return "north";
-          }
-          else if(row < coinLocs[0][0] && canMoveSouth ){
-            return "south";
-          }
-        }
-
-        if(col != coinLocs[0][1]){
-          if(col > coinLocs[0][1] && canMoveWest ){
-            return "west";
-          }
-          else if(col < coinLocs[0][1] && canMoveEast ){
-            return "east";
-          }
-        }
-
-      }
-      else {
         int convI = 0;
         for(int i = 0; i < botInfo.length; i++){
           if(botInfo[i][2] < coins){
@@ -132,6 +107,30 @@ public class ZakSattarBot implements Bot {
         }
         else {
           System.out.println(largestCoin + " is " + coins);
+        }
+      }
+      else {
+        boolean canMoveNorth = enemyThere(row, col, "north", botInfo, arenaLen, coins);
+        boolean canMoveSouth = enemyThere(row, col, "south", botInfo, arenaLen, coins);
+        boolean canMoveWest = enemyThere(row, col, "west", botInfo, arenaLen, coins);
+        boolean canMoveEast = enemyThere(row, col, "east", botInfo, arenaLen, coins);
+
+        if(row != coinLocs[0][0]){
+          if(row > coinLocs[0][0] && canMoveNorth ){
+            return "north";
+          }
+          else if(row < coinLocs[0][0] && canMoveSouth ){
+            return "south";
+          }
+        }
+
+        if(col != coinLocs[0][1]){
+          if(col > coinLocs[0][1] && canMoveWest ){
+            return "west";
+          }
+          else if(col < coinLocs[0][1] && canMoveEast ){
+            return "east";
+          }
         }
       }
       return "none";

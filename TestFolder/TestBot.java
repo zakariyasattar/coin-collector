@@ -1,8 +1,4 @@
-public class EphraimBennettBot implements Bot {
-
-	private int[] cCoin;
-
-	private int[][] botInfo;
+public class TestBot implements Bot {
 
     //returns the name of the Bot
     public String getName() {
@@ -28,22 +24,10 @@ public class EphraimBennettBot implements Bot {
     //                The last three rows are for three more Silver coins
     //@return        One of "north", "east", "south", "west", "none"
     public String move(int row, int col, int coins, int arenaLen, int[][] botInfo, int[][] coinLocs) {
+      int random = (int)(Math.random() * 3);
 
-        int choice = -1;
-        this.cCoin = findClosestCoin(coinLocs, row, col);
-
-        this.botInfo = botInfo;
-
-        int[] closestBot = findClosestBot(botInfo, row, col);
-
-        boolean shouldGrab = shouldGrabCoin(closestBot, row, col);
-
-        if (shouldGrab) {
-        	//do that
-        }
-
-        choice = getDirection(row, col);
-
+      if(random == 0){
+        int choice = (int)(Math.random()*5);
         switch(choice) {
             case 0: return "north";
             case 1: return "east";
@@ -51,87 +35,67 @@ public class EphraimBennettBot implements Bot {
             case 3: return "west";
             default: return "none";
         }
+      }
+      else if(random == 1 || random == 3){
+        if(row != coinLocs[0][0]){
+          if(row > coinLocs[0][0]){
+            return "north";
+          }
+          else if(row < coinLocs[0][0]){
+            return "south";
+          }
+        }
+
+        if(col != coinLocs[0][1]){
+          if(col > coinLocs[0][1]){
+            return "west";
+          }
+          else if(col < coinLocs[0][1]){
+            return "east";
+          }
+        }
+      }
+
+      else if(random == 2){
+        int smallI = 0;
+       int smallest = 100000000;
+       int[][] diffs = new int[coinLocs.length][3];
+
+       for(int i = 0; i < coinLocs.length; i++){
+         int currBot = Math.abs(coinLocs[i][0] - row);
+         int currPos = Math.abs(coinLocs[i][1] - col);
+
+         diffs[i][0] = (currBot + currPos) - 1;
+         diffs[i][1] = coinLocs[i][0];
+         diffs[i][2] = coinLocs[i][1];
+       }
+
+       for(int i = 0; i < diffs.length; i++){
+         if(diffs[i][0] < smallest){
+           smallI = i;
+         }
+       }
+
+       if(row > diffs[smallI][1]){
+         return "north";
+       }
+       else if(row < diffs[smallI][1]){
+         return "south";
+       }
+
+
+       if(col > diffs[smallI][2]){
+         return "west";
+       }
+       else if(col < diffs[smallI][2]){
+         return "east";
+       }
+      }
+      return "none";
     }
 
-    private int getDirection(int row, int col) {
 
-    	int moveLeft = 0;
-    	int moveDown = 0;
-
-    	int yDis = row - cCoin[0];
-		int xDis = col - cCoin[1];
-
-		if (xDis > 0) {
-			moveLeft = 1;
-		} else if (xDis < 0) {
-			moveLeft = -1;
-		}
-
-		if (yDis > 0) {
-			moveDown = 1;
-		} else if (yDis < 0) {
-			moveDown = -1;
-		}
-
-		if (moveLeft == 1) {
-			return 3;
-		} else if (moveLeft == -1) {
-			return 1;
-		}
-
-		if (moveDown == 1) {
-			return 0;
-		} else if (moveDown == -1) {
-			return 2;
-		}
-		return -1;
-
-    }
-
-    private int[] findClosestCoin(int[][] coinLocs, int row, int col) {
-
-    	int[] closestCoin = {1000, 1000};
-
-    	for (int[] r : coinLocs) {
-    		int x = r[0];
-    		int y = r[1];
-
-    		int xDistance = Math.abs(row - x);
-    		int yDistance = Math.abs(col - y);
-    		int totalDistance = xDistance + yDistance;
-
-    		int closestCoinXDistance = Math.abs(row - closestCoin[0]);
-    		int closestCoinYDistance = Math.abs(col - closestCoin[1]);
-    		int closestCoinTotalDistance = closestCoinXDistance + closestCoinYDistance;
-
-    		if (totalDistance < closestCoinTotalDistance) {
-    			closestCoin = r;
-    		}
-    	}
-
-		return closestCoin;
-	}
-
-    private int[] findClosestBot(int[][] botInfo, int row, int col) {
-
-		return null;
-	}
-
-	private boolean shouldGrabCoin(int[] closestBot, int row, int col) {
-
-		boolean isNextToBot = isNextToBot(row, col);
-
-		return false;
-	}
-
-	private boolean isNextToBot(int row, int col) {
-
-		return true;
-	}
-
-
-
-	//informs the player they died in one simulation of the game
+    //informs the player they died in one simulation of the game
     //@param moves      the moves it took to die
     //@param coins      the number of coins the Bot had when it died
     //@param reason     why you died
@@ -152,3 +116,9 @@ public class EphraimBennettBot implements Bot {
     }
 
 }
+
+class TestBotA extends TestBot {}
+class TestBotB extends TestBot {}
+class TestBotC extends TestBot {}
+class TestBotD extends TestBot {}
+class TestBotE extends TestBot {}
