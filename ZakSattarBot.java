@@ -1,5 +1,6 @@
 public class ZakSattarBot implements Bot {
 
+
   private int counter = 0;
   private int smallestPos = 0;
 
