@@ -4,7 +4,7 @@ public interface Bot {
     String getName();
 
 	//returns the next direction the Bot should move.  If the direction takes the
-  //Bot off the screen, then the bot is destroyed
+    //Bot off the screen, then the bot is destroyed
 	//@param row		the row that the bot is in
 	//@param col		the col that the bot is in
 	//@param coins		the number of coins the bot has

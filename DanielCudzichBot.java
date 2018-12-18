@@ -1,4 +1,3 @@
-
 public class DanielCudzichBot implements Bot {
 
 	public String getName() {
@@ -26,17 +25,7 @@ public class DanielCudzichBot implements Bot {
     //@return        One of "north", "east", "south", "west", "none"
 
 	public String move(int row, int col, int coins, int arenaLen, int[][] botInfo, int[][] coinLocs) {
-		//random:
-		/*int choice = (int)(Math.random()*5);
-        switch(choice) {
-            case 0: return "north";
-            case 1: return "east";
-            case 2: return "south";
-            case 3: return "west";
-            default: return "none";
-        }*/
-        //rush none:
-        //return "none";
+		String movement = "none";
 
 		//establishing how to detect boundaries: DEFUNCT
 		/*String[] currentDirections = {"north", "east", "south", "west"};
@@ -58,20 +47,95 @@ public class DanielCudzichBot implements Bot {
 		//just get to the nearest coin
 		int[] goal = new int[2];
 		goal = getTarget(row, col, coinLocs, arenaLen);
-		//this remains correct in honing in, but selecting target is iffy
 		if(col - goal[1] > 0) {
-			return "west";
+			movement = "west";
 		}
 		if (col - goal[1] < 0) {
-			return "east";
+			movement = "east";
 		}
 		if (row - goal[0] > 0) {
-			return "north";
+			movement = "north";
 		}
 		if (row - goal[0] < 0) {
-			return "south";
+			movement = "south";
 		}
-		return "none";
+
+		if(checkCoin(row, col, coinLocs, goal, botInfo, coins) == true) {
+			return "none";
+		}
+
+		//is there a silver coin right next to me? if so, GRAB IT
+		//provided that no one else is next to it
+		for(int i = 1; i < coinLocs.length; i++) {
+			if((Math.abs(col - coinLocs[i][1]) == 1 && row == coinLocs[i][0]) || (Math.abs(row - coinLocs[i][0]) == 1 && col == coinLocs[i][1])) {
+				if(checkCoin(row, col, coinLocs, goal, botInfo, coins) == false) {
+					//now moveate
+					if(col - coinLocs[i][1] == 1) {
+						return "west";
+					}
+					if(col - coinLocs[i][1] == -1) {
+						return "east";
+					}
+					if(row - coinLocs[i][0] == 1) {
+						return "north";
+					}
+					if(row - coinLocs[i][0] == -1) {
+						return "south";
+					}
+				}
+			}
+		}
+
+		//general enemy avoidance - delete in test versions
+		//I think this is leading to cases where I'm trying to check outside of bounds for an enemy by a coin at the corner
+		//scroll through the list of bots first
+		for(int i = 0; i < botInfo.length; i++) {
+			if(botInfo[i][2] >= coins) {
+				//check where he is relative to me
+				int colDistance = col-botInfo[i][1];
+				int rowDistance = row-botInfo[i][0];
+				if(movement == "west" && col + 2 == botInfo[i][1] && row == botInfo[i][0] && botInfo[i][2] >= coins) {
+					System.out.println("wary - stopped");
+					return "none";
+				}
+				if(movement == "east" && col - 2 == botInfo[i][1] && row == botInfo[i][0] && botInfo[i][2] >= coins) {
+					System.out.println("wary - stopped");
+					return "none";
+				}
+				if(movement == "north" && row - 2 == botInfo[i][0] && col == botInfo[i][1] && botInfo[i][2] >= coins) {
+					System.out.println("wary - stopped");
+					return "none";
+				}
+				if(movement == "south" && row + 2 == botInfo[i][0] && col == botInfo[i][1] && botInfo[i][2] >= coins) {
+					System.out.println("wary - stopped");
+					return "none";
+				}
+				//now diagonal cases
+				if(movement == "west" && col +1 == botInfo[i][1] && Math.abs(rowDistance) == 1) {
+					System.out.println("wary - stopped");
+					return "none";
+				}
+				if(movement == "east" && col -1 == botInfo[i][1] && Math.abs(rowDistance) == 1) {
+					System.out.println("wary - stopped");
+					return "none";
+				}
+				if(movement == "north" && row -1 == botInfo[i][0] && Math.abs(colDistance) == 1) {
+					System.out.println("wary - stopped");
+					return "none";
+				}
+				if(movement == "south" && row + 1 == botInfo[i][0] && Math.abs(colDistance) == 1) {
+					System.out.println("wary - stopped");
+					return "none";
+				}
+				//UNCOMMENT IF THIS DOES NOT WORK IN COMPETITION - SUBMIT IN CLASS
+				//other ideas for winning:
+				// reduce distance to satisfy gold coin vs. silver coin dispute
+				//if i find myself adjacent to a silver coin, and there's no one else to take it, go for it
+				//what else dammit
+			}
+		}
+
+		return movement;
     }
 
 	public int[] getTarget(int row, int col, int[][] coinLocs, int arenaLen) {
@@ -103,6 +167,32 @@ public class DanielCudzichBot implements Bot {
 		return target;
 	}
 
+	public boolean checkCoin(int row, int col, int[][] coinLocs, int[] goal, int[][] botInfo, int coins) {
+		//enemy detection
+				if((Math.abs(goal[1]-col) == 1 && Math.abs(goal[0]-row) == 0) || (Math.abs(goal[1]-col) == 0 && Math.abs(goal[0]-row) == 1)) {
+					for(int i = 0; i < botInfo.length; i++) {
+						//is he next to me at the coin? CHECK HOW MUCH HE HAS TOO
+						if(col-goal[1]==1 && botInfo[i][1]-goal[1]==-1 && botInfo[i][0] == goal[0] && botInfo[i][2] >= coins) {
+							System.out.println("stopped at coin");
+							return true;
+						}
+						if(col-goal[1]==-1 && botInfo[i][1]-goal[1]==1 && botInfo[i][0] == goal[0] && botInfo[i][2] >= coins) {
+							System.out.println("stopped at coin");
+							return true;
+						}
+						if(row-goal[0]==1 && botInfo[i][0]-goal[0]==-1 && botInfo[i][1] == goal[1] && botInfo[i][2] >= coins) {
+							System.out.println("stopped at coin");
+							return true;
+						}
+						if(row-goal[0]==-1 && botInfo[i][0]-goal[0]==1 && botInfo[i][1] == goal[1] && botInfo[i][2] >= coins) {
+							System.out.println("stopped at coin");
+							return true;
+						} //I can only do none or there will be cases where I kill myself at the boundary
+					}
+				}
+			return false;
+	}
+
 
 
 	//informs the player they died in one simulation of the game
@@ -110,7 +200,8 @@ public class DanielCudzichBot implements Bot {
     //@param coins      the number of coins the Bot had when it died
     //@param reason     why you died
 	public void died(int moves, int coins, String reason) {
-	    //have reason for death printed out at each death
+		//have reason for death printed out at each death
+		System.out.println(reason);
     }
 
 	//informs the player they died in the current simulation, but this description is confusing
@@ -118,6 +209,7 @@ public class DanielCudzichBot implements Bot {
     //@param coins      the number of coins the Bot had when it died
 	public void won(int moves, int coins) {
 	    //print statement displaying strategies used?
+		System.out.println("i win");
     }
 
 	//informs the player that we are at the beginning of a new simulation

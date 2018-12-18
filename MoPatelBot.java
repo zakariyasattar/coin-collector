@@ -39,7 +39,29 @@ public class MoPatelBot implements Bot {
     //@return        One of "north", "east", "south", "west", "none"
     public String move(int row, int col, int coins, int arenaLen, int[][] botInfo, int[][] coinLocs) {
 
-    	/*for(int[] botLocs1 : botInfo) {
+    	if(botInfo.length==2){
+    		if(botInfo[1][2]>coins) {
+    			xEnemy = botInfo[1][0];
+    			yEnemy = botInfo[1][1];
+    			enemyCoins = botInfo[1][2];
+    			if(enemyCoins>coins && botInfo.length==2) {
+    				if(row<xEnemy && row!=0) {
+    	    			return "north";
+    	    		}
+    	    		if(row>xEnemy && row!=arenaLen) {
+    	    			return "south";
+    	    		}
+    	    		if(col<yEnemy && col!=0) {
+    	    			return "west";
+    	    		}
+    	    		if(col>yEnemy && col!=arenaLen) {
+    	    			return "east";
+    	    		}
+    			}
+    		}
+
+    	}
+    	for(int[] botLocs1 : botInfo) {
     		if(botLocs1[2]>coins) {
     			bigbotX = botLocs1[0];
     			bigbotY = botLocs1[1];
@@ -56,16 +78,16 @@ public class MoPatelBot implements Bot {
     				return "east";
     			}
     		}
-    	}*/
+    	}
 
     	//CODE TO ATTACK WEAKER BOT IN 1V1
 
 
-    	if(botInfo.length<=2) {
+    	if(botInfo.length==2) {
     		xEnemy = botInfo[1][0];
     		yEnemy = botInfo[1][1];
     		enemyCoins = botInfo[1][2];
-    		if(enemyCoins<coins && botInfo.length<=2){
+    		if(enemyCoins<coins && botInfo.length==2){
     		if(row<xEnemy && row!=arenaLen) {
     			return "south";
     		}
@@ -162,7 +184,7 @@ public class MoPatelBot implements Bot {
     //@param coins      the number of coins the Bot had when it died
     //@param reason     why you died
     public void died(int moves, int coins, String reason) {
-
+			System.out.println("died");
     }
 
     //informs the player they died in the current simulation

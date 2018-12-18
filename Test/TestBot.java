@@ -24,9 +24,6 @@ public class TestBot implements Bot {
     //                The last three rows are for three more Silver coins
     //@return        One of "north", "east", "south", "west", "none"
     public String move(int row, int col, int coins, int arenaLen, int[][] botInfo, int[][] coinLocs) {
-      int random = (int)(Math.random() * 3);
-
-      if(random == 0){
         int choice = (int)(Math.random()*5);
         switch(choice) {
             case 0: return "north";
@@ -35,84 +32,26 @@ public class TestBot implements Bot {
             case 3: return "west";
             default: return "none";
         }
-      }
-      else if(random == 1 || random == 3){
-        if(row != coinLocs[0][0]){
-          if(row > coinLocs[0][0]){
-            return "north";
-          }
-          else if(row < coinLocs[0][0]){
-            return "south";
-          }
-        }
-
-        if(col != coinLocs[0][1]){
-          if(col > coinLocs[0][1]){
-            return "west";
-          }
-          else if(col < coinLocs[0][1]){
-            return "east";
-          }
-        }
-      }
-
-      else if(random == 2){
-        int smallI = 0;
-       int smallest = 100000000;
-       int[][] diffs = new int[coinLocs.length][3];
-
-       for(int i = 0; i < coinLocs.length; i++){
-         int currBot = Math.abs(coinLocs[i][0] - row);
-         int currPos = Math.abs(coinLocs[i][1] - col);
-
-         diffs[i][0] = (currBot + currPos) - 1;
-         diffs[i][1] = coinLocs[i][0];
-         diffs[i][2] = coinLocs[i][1];
-       }
-
-       for(int i = 0; i < diffs.length; i++){
-         if(diffs[i][0] < smallest){
-           smallI = i;
-         }
-       }
-
-       if(row > diffs[smallI][1]){
-         return "north";
-       }
-       else if(row < diffs[smallI][1]){
-         return "south";
-       }
-
-
-       if(col > diffs[smallI][2]){
-         return "west";
-       }
-       else if(col < diffs[smallI][2]){
-         return "east";
-       }
-      }
-      return "none";
     }
-
 
     //informs the player they died in one simulation of the game
     //@param moves      the moves it took to die
     //@param coins      the number of coins the Bot had when it died
     //@param reason     why you died
     public void died(int moves, int coins, String reason) {
-
+    
     }
 
     //informs the player they died in the current simulation
     //@param moves      the moves it took to die
     //@param coins      the number of coins the Bot had when it died
     public void won(int moves, int coins) {
-
+    
     }
 
     //informs the player that we are at the beginning of a new simulation
     public void newSimulation() {
-
+    
     }
 
 }

@@ -34,7 +34,6 @@ public class Simulation extends JFrame {
 
         setSize(600, 600);
         setTitle("Collect Those Coins!");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         allBotClasses = loadClasses();
         allBots = new ArrayList<Bot>();
@@ -200,7 +199,7 @@ public class Simulation extends JFrame {
     {
         ArrayList<Class<?>> list = new ArrayList<Class<?>>();
 
-        String currentDir = System.getProperty("user.dir") /*+ "/bin"*/;
+        String currentDir = System.getProperty("user.dir");// + "/bin";
         File dir = new File(currentDir);
 
         String[] children = dir.list();
@@ -275,7 +274,7 @@ public class Simulation extends JFrame {
                 int col = b.col;
                 String next = "";
                 try {
-                    next = b.logic.move(b.row, b.col, b.coins, bots.size()+4, bi, coinLocs);
+                    next = b.logic.move(b.row, b.col, b.coins, bi.length, bi, coinLocs);
                 }
                 catch(Exception e) {
                     b.logic.died(moves, b.coins, "Bot generate an exception and died!");
@@ -287,7 +286,6 @@ public class Simulation extends JFrame {
                     score.moves += moves;
                     score.coinsAtDeath += b.coins;
 
-                    e.printStackTrace();
                     continue;
                 }
 
@@ -326,18 +324,15 @@ public class Simulation extends JFrame {
                 BotInfo survivor = info.get(0);
 
                 int coinCollection = 0;
-                boolean survived = true;
 
                 //some are going to die
                 if(info.size() > 1) {
 
-                    survived = false;
-                    for(int z = 0; z < info.size(); z++) {
-                        BotInfo i = info.get(z);
+                    int pos = 0;
+                    for(BotInfo i: info) {
 
                         //don't kill the first Bot if it has more coins than the rest
-                        if(z == 0 && info.get(1).coins != info.get(0).coins) {
-                            survived = true;
+                        if(pos == 0 && info.get(1).coins != info.get(0).coins) {
                             continue;
                         }
 
@@ -352,32 +347,22 @@ public class Simulation extends JFrame {
 
                         coinCollection += (int)(Math.ceil(i.coins * 0.85));
                     }
+
+                    continue;
                 }
 
+                board.occupied[survivor.row][survivor.col] = false;
+                board.occupied[row][col] = true;
+                survivor.row = row;
+                survivor.col = col;
+                survivor.coins += coinCollection;
 
-                if(survived) {
-                    board.occupied[survivor.row][survivor.col] = false;
-                    board.occupied[row][col] = true;
-                    survivor.coins += coinCollection;
-
-                    survivor.row = row;
-                    survivor.col = col;
-
-                    for(Coin c: coins) {
-                        if(c.row == row && c.col == col) {
-                            survivor.coins += c.price;
-                            c.collected = true;
-
-                            break;
-                        }
+                for(Coin c: coins) {
+                    if(c.row == row && c.col == col) {
+                        survivor.coins += c.price;
+                        c.teleport(board);
+                        break;
                     }
-                }
-            }
-
-            for(Coin c: coins) {
-                if(c.collected) {
-                    c.collected = false;
-                    c.teleport(board);
                 }
             }
 
@@ -494,7 +479,6 @@ class Coin {
 	int price;
 	int row = -1;
 	int col = -1;
-    boolean collected = false;
 
 	public Coin(int p, Board board) {
 		price = p;
